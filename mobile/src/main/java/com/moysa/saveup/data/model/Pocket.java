@@ -10,7 +10,9 @@ public interface Pocket {
 
     int getUserId();
 
-    int getAmount();
+    float getAmount();
+
+    float getSavePercent();
 
     String getName();
 }

@@ -12,7 +12,7 @@ public interface Transaction {
 
     int getPocketId();
 
-    int getAmount();
+    float getAmount();
 
     String getComment();
 

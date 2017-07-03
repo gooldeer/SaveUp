@@ -39,14 +39,16 @@ public class PocketEntity implements Pocket, Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int userId;
-    private int amount;
+    private float amount;
     private String name;
+    private float savePercent;
 
     protected PocketEntity(Parcel in) {
         id = in.readInt();
         userId = in.readInt();
-        amount = in.readInt();
+        amount = in.readFloat();
         name = in.readString();
+        savePercent = in.readFloat();
     }
 
     public PocketEntity() {
@@ -57,14 +59,16 @@ public class PocketEntity implements Pocket, Parcelable {
         userId = pocket.getUserId();
         amount = pocket.getAmount();
         name = pocket.getName();
+        savePercent = pocket.getSavePercent();
     }
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeInt(userId);
-        dest.writeInt(amount);
+        dest.writeFloat(amount);
         dest.writeString(name);
+        dest.writeFloat(savePercent);
     }
 
     @Override
@@ -91,12 +95,21 @@ public class PocketEntity implements Pocket, Parcelable {
     }
 
     @Override
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public float getSavePercent() {
+        return savePercent;
+    }
+
+    public void setSavePercent(float savePercent) {
+        this.savePercent = savePercent;
     }
 
     @Override
@@ -117,16 +130,18 @@ public class PocketEntity implements Pocket, Parcelable {
 
         if (id != that.id) return false;
         if (userId != that.userId) return false;
+        if (savePercent != that.savePercent) return false;
         return amount == that.amount && (name != null ? name.equals(that.name) : that.name == null);
 
     }
 
     @Override
     public int hashCode() {
-        int result = id;
+        float result = id;
         result = 31 * result + userId;
         result = 31 * result + amount;
+        result = 31 * result + savePercent;
         result = 31 * result + (name != null ? name.hashCode() : 0);
-        return result;
+        return (int) result;
     }
 }

@@ -43,14 +43,14 @@ public class TransactionEntity implements Transaction, Parcelable {
     @PrimaryKey(autoGenerate = true)
     private int id;
     private int pocketId;
-    private int amount;
+    private float amount;
     private String comment;
     private Date date;
 
     public TransactionEntity(Parcel in) {
         id = in.readInt();
         pocketId = in.readInt();
-        amount = in.readInt();
+        amount = in.readFloat();
         comment = in.readString();
         date = new Date(in.readLong());
     }
@@ -85,11 +85,11 @@ public class TransactionEntity implements Transaction, Parcelable {
     }
 
     @Override
-    public int getAmount() {
+    public float getAmount() {
         return amount;
     }
 
-    public void setAmount(int amount) {
+    public void setAmount(float amount) {
         this.amount = amount;
     }
 
@@ -120,7 +120,7 @@ public class TransactionEntity implements Transaction, Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
         dest.writeInt(pocketId);
-        dest.writeInt(amount);
+        dest.writeFloat(amount);
         dest.writeString(comment);
         dest.writeLong(date.getTime());
     }
@@ -141,11 +141,11 @@ public class TransactionEntity implements Transaction, Parcelable {
 
     @Override
     public int hashCode() {
-        int result = id;
+        float result = id;
         result = 31 * result + pocketId;
         result = 31 * result + amount;
         result = 31 * result + (comment != null ? comment.hashCode() : 0);
         result = 31 * result + (date != null ? date.hashCode() : 0);
-        return result;
+        return (int) result;
     }
 }
