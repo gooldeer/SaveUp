@@ -42,6 +42,7 @@ public class PocketsRepository {
         }.executeAsLiveData();
     }
 
+    @NonNull
     public LiveData<Response<PocketEntity>> pocket(int pocketId) {
 
         return new LoadingLiveDataResponse<PocketEntity>() {
