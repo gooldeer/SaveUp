@@ -30,7 +30,6 @@ public class UsersPocketsManagerTest {
     @Before
     public void setUp() throws Exception {
         User user = UsersGenerator.testUser();
-        mManager = new UsersPocketsManager();
 
         mPockets = PocketsGenerator.testPockets(user);
         mPockets.forEach(pocketEntity -> pocketEntity.setSavePercent(SAVE_PERCENT));
@@ -38,16 +37,8 @@ public class UsersPocketsManagerTest {
         mGeneralPocket = PocketsGenerator.testPocket(user);
         mGeneralPocket.setId(210);
         mGeneralPocket.setSavePercent(1f);
-        mGeneralPocket.setName(UsersPocketsManager.GENERAL_PREFIX + user.getId() * 31);
 
-        mPockets.add(mGeneralPocket);
-
-        mManager.instantiateWith(user, mPockets);
-    }
-
-    @Test
-    public void instantiateWith() throws Exception {
-
+        mManager = new UsersPocketsManager(mGeneralPocket, mPockets);
     }
 
     @Test
@@ -64,13 +55,16 @@ public class UsersPocketsManagerTest {
 
         List<Transaction> result = mManager.addTransaction(transaction);
 
-        assertNotNull(result);
-        assertTrue(result.size() > 0);
-        assertEquals(oldAmount + value, mGeneralPocket.getAmount(), 0);
-
         mManager.getSavingPocketManagers().forEach(manager -> savedSum[1] += manager.getAmount());
 
-        assertEquals(savedSum[0] + value * SAVE_PERCENT * (mPockets.size() - 1), savedSum[1], 0);
+        assertNotNull(result);
+        assertTrue(result.size() > 0);
+        assertEquals(
+                oldAmount + (value - value * SAVE_PERCENT * (mPockets.size())),
+                mGeneralPocket.getAmount(),
+                0
+        );
+        assertEquals(savedSum[0] + value * SAVE_PERCENT * (mPockets.size()), savedSum[1], 0);
     }
 
     @Test

@@ -1,13 +1,11 @@
 package com.moysa.saveup.manage;
 
 import android.support.annotation.NonNull;
-import android.text.TextUtils;
 
 import com.moysa.saveup.data.entity.PocketEntity;
+import com.moysa.saveup.data.entity.TransactionEntity;
 import com.moysa.saveup.data.model.Pocket;
 import com.moysa.saveup.data.model.Transaction;
-import com.moysa.saveup.data.model.User;
-import com.moysa.saveup.manage.exception.UsersPocketsManagerInstantiationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,34 +16,30 @@ import java.util.List;
 
 public class UsersPocketsManager {
 
-    static final String GENERAL_PREFIX = "general";
-
+    @SuppressWarnings("NullableProblems")
     @NonNull
     private PocketManager mGeneralPocketManager;
 
     @NonNull
     private List<PocketManager> mSavingPocketManagers;
 
-    public void instantiateWith(@NonNull User user, @NonNull List<PocketEntity> pockets) {
-
-        String generalPocketName = GENERAL_PREFIX + (user.getId() * 31);
-
+    public UsersPocketsManager(@NonNull PocketEntity generalPocket, @NonNull List<PocketEntity> savingPockets) {
         mSavingPocketManagers = new ArrayList<>();
 
+        setGeneralPocket(generalPocket);
+        setSavingPockets(savingPockets);
+    }
+
+    private void setGeneralPocket(@NonNull PocketEntity pocket) {
+
+        pocket.setSavePercent(1f);
+        mGeneralPocketManager = new PocketManager(pocket);
+    }
+
+    private void setSavingPockets(@NonNull List<PocketEntity> pockets) {
+
         pockets.forEach(pocket -> {
-
-            if (!TextUtils.isEmpty(pocket.getName())) {
-
-                if (pocket.getName().equals(generalPocketName)) {
-                    mGeneralPocketManager = new PocketManager(pocket);
-                } else {
-                    PocketManager manager = new PocketManager(pocket);
-                    mSavingPocketManagers.add(manager);
-                }
-            } else {
-                throw new UsersPocketsManagerInstantiationException(
-                        "Null pocket name. id=" + pocket.getId());
-            }
+            mSavingPocketManagers.add(new PocketManager(pocket));
         });
     }
 
@@ -56,7 +50,16 @@ public class UsersPocketsManager {
         result.add(mGeneralPocketManager.workWith(transaction));
 
         mSavingPocketManagers.forEach(
-                pocketManager -> result.add(pocketManager.workWith(transaction)));
+                pocketManager -> {
+                    Transaction t = pocketManager.workWith(transaction);
+                    result.add(t);
+
+                    TransactionEntity forGen = new TransactionEntity(t);
+                    forGen.setPocketId(mGeneralPocketManager.getPocketId());
+                    forGen.setAmount(0 - forGen.getAmount());
+
+                    result.add(mGeneralPocketManager.workWith(forGen));
+                });
 
         return result;
     }
