@@ -38,9 +38,7 @@ public class UsersPocketsManager {
 
     private void setSavingPockets(@NonNull List<PocketEntity> pockets) {
 
-        pockets.forEach(pocket -> {
-            mSavingPocketManagers.add(new PocketManager(pocket));
-        });
+        pockets.forEach(pocket -> mSavingPocketManagers.add(new PocketManager(pocket)));
     }
 
     public List<Transaction> addTransaction(@NonNull Transaction transaction) {

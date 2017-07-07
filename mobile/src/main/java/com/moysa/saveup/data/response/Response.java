@@ -55,7 +55,7 @@ public class Response<T> {
         return status;
     }
 
-    enum Status {
+    public enum Status {
         SUCCESS, ERROR, LOADING
     }
 }

@@ -65,7 +65,7 @@ public class DatabaseCreator {
                 Context context = params[0].getApplicationContext();
 
                 //reset db
-                context.deleteDatabase(DATABASE_NAME);
+//                context.deleteDatabase(DATABASE_NAME);
 
                 //build db
                 AppDatabase db = Room.databaseBuilder(
@@ -77,7 +77,7 @@ public class DatabaseCreator {
                 Log.d("DatabaseCreator", "Filling db from " + Thread.currentThread().getName());
 
                 //filling db with dump values
-                DatabaseInitUtil.initializeDb(db);
+//                DatabaseInitUtil.initializeDb(db);
 
                 mDb = db;
 

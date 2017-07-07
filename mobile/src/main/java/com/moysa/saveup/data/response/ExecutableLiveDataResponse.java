@@ -40,9 +40,9 @@ public abstract class ExecutableLiveDataResponse<T> implements LiveDataResponse<
             Response<T> data = manipulate();
 
             if (data == null) {
-                result.setValue(Response.error(LOADING_ERROR));
+                result.postValue(Response.error(LOADING_ERROR));
             } else {
-                result.setValue(data);
+                result.postValue(data);
             }
         });
 
